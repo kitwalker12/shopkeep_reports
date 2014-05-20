@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["adi.version1@gmail.com"]
   spec.summary       = %q{Download Shopkeep Reports}
   spec.description   = %q{Gem for downloading shopkeep reports via mechanize}
-  spec.homepage      = ""
+  spec.homepage      = "http://github.com/kitwalker12/shopkeep_reports"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
