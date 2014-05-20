@@ -15,6 +15,13 @@ module ShopkeepReports
       @@instance ||= new
     end
 
+    def authorize(params = {})
+      return @@agent if @@agent
+      @username = configuration.email
+      @password = configuration.password
+      login
+    end
+
     def download_report(report_link, type = 'get')
       new_agent = Mechanize.new
       new_agent.cookie_jar = @@cookie_jar
@@ -31,7 +38,7 @@ module ShopkeepReports
       else
         file_uri = download_link.uri
       end
-      file_name = Rails.root.join('tmp', (file_uri.to_s.split('.csv').first.split('/').last + '.csv'))
+      file_name = File.join(ShopkeepReports.root, 'tmp', (file_uri.to_s.split('.csv').first.split('/').last + '.csv'))
       File.open(file_name, "wb") do |file|
         file_uri.open do |uri|
           file.write(uri.read)
@@ -43,12 +50,12 @@ module ShopkeepReports
       raise ShopkeepException, "#{e.message}"
     end
 
-    def download_inventory
+    def download_report_link(report_link)
       new_agent = Mechanize.new
       new_agent.cookie_jar = @@cookie_jar
-      download_link = new_agent.get(configuration.uri('/stock_items_exports/export_bulk_inventory'))
+      download_link = new_agent.get(report_link)
       file_uri = download_link.uri
-      file_name = Rails.root.join('tmp', (file_uri.to_s.split('.csv').first.split('/').last + '.csv'))
+      file_name = File.join(ShopkeepReports.root, 'tmp', (file_uri.to_s.split('.csv').first.split('/').last + '.csv'))
       File.open(file_name, "wb") do |file|
         file_uri.open do |uri|
           file.write(uri.read)
@@ -62,14 +69,7 @@ module ShopkeepReports
 
     private
     def configuration
-      BrightpearlApi.configuration
-    end
-
-    def authorize(params = {})
-      return @@agent if @@agent
-      @username = configuration.email
-      @password = configuration.password
-      login
+      ShopkeepReports.configuration
     end
 
     def login
