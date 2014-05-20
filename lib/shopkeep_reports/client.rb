@@ -22,12 +22,18 @@ module ShopkeepReports
       login
     end
 
-    def download_report(report_link, type = 'get')
+    def download_report(report_link, type = 'get', start_date = nil, end_date = nil)
       new_agent = Mechanize.new
       new_agent.cookie_jar = @@cookie_jar
       case type
       when 'get'
         new_agent.get(report_link)
+        if !start_date.blank? and !end_date.blank?
+          new_agent.page.forms.first.set_fields({
+            'start_date' => start_date.to_s,
+            'end_date' => end_date.to_s
+          })
+        end
         new_agent.page.forms.first.submit
       when 'post'
         new_agent.post(report_link, { 'authenticity_token' => @@token })
@@ -53,13 +59,11 @@ module ShopkeepReports
     def download_report_link(report_link)
       new_agent = Mechanize.new
       new_agent.cookie_jar = @@cookie_jar
-      download_link = new_agent.get(report_link)
-      file_uri = download_link.uri
-      file_name = File.join(ShopkeepReports.root, 'tmp', (file_uri.to_s.split('.csv').first.split('/').last + '.csv'))
+      download = new_agent.get(report_link)
+      file_body = download.body
+      file_name = File.join(ShopkeepReports.root, 'tmp', download.filename)
       File.open(file_name, "wb") do |file|
-        file_uri.open do |uri|
-          file.write(uri.read)
-        end
+        file.write(file_body)
       end
       file_name
     rescue Exception => e
