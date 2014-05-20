@@ -1,5 +1,6 @@
 require "shopkeep_reports/version"
 require "shopkeep_reports/configuration"
+require "shopkeep_reports/client"
 
 module ShopkeepReports
   class << self
