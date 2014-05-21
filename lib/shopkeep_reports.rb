@@ -16,8 +16,4 @@ module ShopkeepReports
     self.configuration ||= Configuration.instance
     yield(configuration)
   end
-
-  def self.root
-    File.dirname __dir__
-  end
 end

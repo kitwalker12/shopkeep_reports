@@ -23,7 +23,8 @@ Or install it yourself as:
 ```ruby
 # config/initializers/shopekeep.rb
 # ENV['SHOPKEEP_EMAIL'] & ENV['SHOPKEEP_PASSWORD'] & ENV['SHOPKEEP_ACCOUNT'] should be set
-ShopkeepReports.configure do
+ShopkeepReports.configure do |c|
+  c.tmp_directory = Rails.root
 end
 ```
 
@@ -34,6 +35,7 @@ ShopkeepReports.configure do |c|
   c.email = 'me@example.com'
   c.password = 'my_password'
   c.account = 'awesomecompany'
+  c.tmp_directory = Rails.root
 end
 ```
 

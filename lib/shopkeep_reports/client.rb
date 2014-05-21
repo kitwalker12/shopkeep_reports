@@ -44,7 +44,7 @@ module ShopkeepReports
       else
         file_uri = download_link.uri
       end
-      file_name = File.join(ShopkeepReports.root, 'tmp', (file_uri.to_s.split('.csv').first.split('/').last + '.csv'))
+      file_name = File.join(configuration.tmp_directory, (file_uri.to_s.split('.csv').first.split('/').last + '.csv'))
       File.open(file_name, "wb") do |file|
         file_uri.open do |uri|
           file.write(uri.read)
@@ -61,7 +61,7 @@ module ShopkeepReports
       new_agent.cookie_jar = @@cookie_jar
       download = new_agent.get(report_link)
       file_body = download.body
-      file_name = File.join(ShopkeepReports.root, 'tmp', download.filename)
+      file_name = File.join(configuration.tmp_directory, download.filename)
       File.open(file_name, "wb") do |file|
         file.write(file_body)
       end

@@ -4,7 +4,7 @@ module ShopkeepReports
   class Configuration
     include Singleton
 
-    attr_accessor :email, :password, :account
+    attr_accessor :email, :password, :account, :tmp_directory
 
     def self.instance
       @@instance ||= new
@@ -14,6 +14,7 @@ module ShopkeepReports
       @email = default_email
       @password = default_password
       @account = default_account
+      @tmp_directory = "/tmp"
       args.each_pair do |option, value|
         self.send("#{option}=", value)
       end
@@ -21,7 +22,7 @@ module ShopkeepReports
 
     def valid?
       result = true
-      [:email, :password, :account].each do |value|
+      [:email, :password, :account, :tmp_directory].each do |value|
         result = false if self.send(value).blank?
       end
       result
