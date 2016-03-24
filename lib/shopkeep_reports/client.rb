@@ -71,6 +71,14 @@ module ShopkeepReports
       raise ShopkeepException, "#{e.message}"
     end
 
+    def summary_report(report_link, start_date = nil, end_date = nil)
+      new_agent = Mechanize.new
+
+      new_agent.cookie_jar = @@cookie_jar
+
+      JSON.parse(new_agent.get(report_link).body)['data']
+    end
+
     private
     def configuration
       ShopkeepReports.configuration

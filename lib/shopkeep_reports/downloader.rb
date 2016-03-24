@@ -49,6 +49,44 @@ module ShopkeepReports
       Client.instance.download_report_link(configuration.uri("/transactions.csv?#{query.to_query}"))
     end
 
+    def summary_report(type, start_date = nil, end_date = nil)
+      query = {
+        start: start_date.strftime("%B %d %Y %I:%M %p"),
+        finish: end_date.strftime("%B %d %Y %I:%M %p"),
+      }
+
+      Client.instance.authorize
+      Client.instance.summary_report(configuration.uri("/summary_report/#{type}?#{query.to_query}"))
+    end
+
+    def total_net_sales(start_date = nil, end_date = nil)
+      summary_report('total_net_sales', start_date, end_date)
+    end
+
+    def transactions_count(start_date = nil, end_date = nil)
+      summary_report('transactions_count', start_date, end_date)
+    end
+
+    def top_selling_items(start_date = nil, end_date = nil)
+      summary_report('top_selling_items', start_date, end_date)
+    end
+
+    def sales_detail(start_date = nil, end_date = nil)
+      summary_report('sales_detail', start_date, end_date)
+    end
+
+    def tender_breakdown(start_date = nil, end_date = nil)
+      summary_report('tender_breakdown', start_date, end_date)
+    end
+
+    def total_sales_by_hour(start_date = nil, end_date = nil)
+      summary_report('total_sales_by_hour', start_date, end_date)
+    end
+
+    def new_and_returning_customers(start_date = nil, end_date = nil)
+      summary_report('new_and_returning_customers', start_date, end_date)
+    end
+
     private
     def configuration
       ShopkeepReports.configuration
