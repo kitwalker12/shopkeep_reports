@@ -46,7 +46,7 @@ module ShopkeepReports
         tenders: tenders
       }
       Client.instance.authorize
-      Client.instance.download_report_link(configuration.uri("/transactions.csv?#{query.to_query}"))
+      Client.instance.download_transaction_report_link(configuration.uri("/transactions.csv?#{query.to_query}"))
     end
 
     private
