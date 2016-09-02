@@ -56,6 +56,27 @@ module ShopkeepReports
       raise ShopkeepException, "#{e.message}"
     end
 
+    def download_transaction_report_link(report_link)
+      new_agent = Mechanize.new
+      new_agent.cookie_jar = @@cookie_jar
+      new_agent.get(report_link)
+      sleep(5)
+      export_list = new_agent.get(configuration.uri("/export_center.json"))
+      export_json = export_list.body
+      export_hash = JSON.parse(export_json)
+      report_to_download = export_hash["aaData"].first["url"]
+      download = new_agent.get(configuration.uri(report_to_download))
+      file_body = download.body
+      file_name = File.join(configuration.tmp_directory, download.filename)
+      File.open(file_name, "wb") do |file|
+        file.write(file_body)
+      end
+      file_name
+    rescue Exception => e
+      reset
+      raise ShopkeepException, "#{e.message}"
+    end
+
     def download_report_link(report_link)
       new_agent = Mechanize.new
       new_agent.cookie_jar = @@cookie_jar
