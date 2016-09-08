@@ -56,10 +56,10 @@ module ShopkeepReports
       raise ShopkeepException, "#{e.message}"
     end
 
-    def download_transaction_report_link(report_link)
+    def download_transaction_report_link(report_link, start, finish)
       new_agent = Mechanize.new
       new_agent.cookie_jar = @@cookie_jar
-      new_agent.get(report_link)
+      new_agent.post(report_link, { 'authenticity_token' => @@token, 'start' => start, 'finish' => finish })
       sleep(5)
       export_list = new_agent.get(configuration.uri("/export_center.json"))
       export_json = export_list.body

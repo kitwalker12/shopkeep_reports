@@ -32,6 +32,10 @@ module ShopkeepReports
       "https://" + @account + ".shopkeepapp.com" + path
     end
 
+    def transaction_uri(path)
+      "https://www.shopkeepapp.com" + path
+    end
+
     private
     def default_email
       ENV['SHOPKEEP_EMAIL']
