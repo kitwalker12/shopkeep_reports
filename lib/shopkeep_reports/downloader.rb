@@ -41,9 +41,9 @@ module ShopkeepReports
       tenders = args.fetch(:tenders, false)
       link = ""
       if detailed == true
-        link = "/exports/rogue/transacted_items"
+        link = "/exports/items"
       elsif tenders == true
-        link = "/exports/rogue/tenders"
+        link = "/exports/tenders"
       end
       Client.instance.authorize
       Client.instance.download_transaction_report_link(configuration.transaction_uri(link), start_date.iso8601, end_date.iso8601)
