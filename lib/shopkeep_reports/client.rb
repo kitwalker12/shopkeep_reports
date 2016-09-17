@@ -9,6 +9,8 @@ module ShopkeepReports
     @@agent = false
     @@cookie_jar = false
     @@token = false
+    @@api_auth_token = false
+    @@store = false
     attr_accessor :agent, :cookie_jar, :token
 
     def self.instance
@@ -92,12 +94,12 @@ module ShopkeepReports
       raise ShopkeepException, "#{e.message}"
     end
 
-    def summary_report(report_link, start_date = nil, end_date = nil)
+    def summary_report(report_link, params)
       new_agent = Mechanize.new
-
       new_agent.cookie_jar = @@cookie_jar
+      headers = { 'Authorization' => "Token token=#{@@api_auth_token}", 'X-Shopkeep-Store-Id' => @@store['uuid'], 'X-Shopkeep-Store-Timezone' => @@store['timezone'] }
 
-      JSON.parse(new_agent.get(report_link).body)['data']
+      JSON.parse(new_agent.get(report_link, params, nil, headers).body)['data']
     end
 
     private
@@ -112,8 +114,12 @@ module ShopkeepReports
       form.login = @username
       form.password = @password
       form.submit
+      if match = agent.page.body.match(/var current_store = (\{.+\});$/)
+        @@store = JSON.parse(match[1])
+      end
       @@cookie_jar = agent.cookie_jar
       @@token = agent.page.at('meta[@name="csrf-token"]')['content']
+      @@api_auth_token = agent.page.at('meta[@name="auth-token"]')['content']
       @@agent = agent
     end
 

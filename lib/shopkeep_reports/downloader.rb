@@ -51,40 +51,40 @@ module ShopkeepReports
 
     def summary_report(type, start_date = nil, end_date = nil)
       query = {
-        start: start_date.strftime("%B %d %Y %I:%M %p"),
-        finish: end_date.strftime("%B %d %Y %I:%M %p"),
+        start: start_date.strftime("%Y-%m-%dT%H:%M:%S.%3N"),
+        finish: end_date.strftime("%Y-%m-%dT%H:%M:%S.%3N"),
       }
 
       Client.instance.authorize
-      Client.instance.summary_report(configuration.uri("/summary_report/#{type}?#{query.to_query}"))
+      Client.instance.summary_report(configuration.reporting_uri("/#{type}"), query)
     end
 
     def total_net_sales(start_date = nil, end_date = nil)
-      summary_report('total_net_sales', start_date, end_date)
+      if data = operation_summary(start_date, end_date)
+        data['net_sales'].to_i
+      else
+        0
+      end
     end
 
-    def transactions_count(start_date = nil, end_date = nil)
-      summary_report('transactions_count', start_date, end_date)
+    def operation_summary(start_date = nil, end_date = nil)
+      summary_report('operation_summary', start_date, end_date)
+    end
+
+    def operations_by_hour(start_date = nil, end_date = nil)
+      summary_report('operations_by_hour', start_date, end_date)
+    end
+
+    def transaction_total(start_date = nil, end_date = nil)
+      summary_report('transaction_total', start_date, end_date)
+    end
+
+    def tenders_summary(start_date = nil, end_date = nil)
+      summary_report('tenders_summary', start_date, end_date)
     end
 
     def top_selling_items(start_date = nil, end_date = nil)
       summary_report('top_selling_items', start_date, end_date)
-    end
-
-    def sales_detail(start_date = nil, end_date = nil)
-      summary_report('sales_detail', start_date, end_date)
-    end
-
-    def tender_breakdown(start_date = nil, end_date = nil)
-      summary_report('tender_breakdown', start_date, end_date)
-    end
-
-    def total_sales_by_hour(start_date = nil, end_date = nil)
-      summary_report('total_sales_by_hour', start_date, end_date)
-    end
-
-    def new_and_returning_customers(start_date = nil, end_date = nil)
-      summary_report('new_and_returning_customers', start_date, end_date)
     end
 
     private
