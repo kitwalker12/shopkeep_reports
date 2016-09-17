@@ -75,10 +75,6 @@ module ShopkeepReports
       summary_report('operations_by_hour', start_date, end_date)
     end
 
-    def transaction_total(start_date = nil, end_date = nil)
-      summary_report('transaction_total', start_date, end_date)
-    end
-
     def tenders_summary(start_date = nil, end_date = nil)
       summary_report('tenders_summary', start_date, end_date)
     end
