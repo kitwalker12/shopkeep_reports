@@ -39,14 +39,14 @@ module ShopkeepReports
       end_date = args.fetch(:end_date, Time.now)
       detailed = args.fetch(:detailed, false)
       tenders = args.fetch(:tenders, false)
-      query = {
-        start_time: start_date.strftime("%B %d %Y %I:%M %p"),
-        end_time: end_date.strftime("%B %d %Y %I:%M %p"),
-        detailed: detailed,
-        tenders: tenders
-      }
+      link = ""
+      if detailed == true
+        link = "/exports/items"
+      elsif tenders == true
+        link = "/exports/tenders"
+      end
       Client.instance.authorize
-      Client.instance.download_transaction_report_link(configuration.uri("/transactions.csv?#{query.to_query}"))
+      Client.instance.download_transaction_report_link(configuration.transaction_uri(link), start_date.iso8601, end_date.iso8601)
     end
 
     def summary_report(type, start_date = nil, end_date = nil)
