@@ -59,16 +59,13 @@ module ShopkeepReports
       Client.instance.summary_report(configuration.reporting_uri("/#{type}"), query)
     end
 
-    def total_net_sales(start_date = nil, end_date = nil)
-      if data = operation_summary(start_date, end_date)
-        data['net_sales'].to_i
-      else
-        0
-      end
-    end
-
     def operation_summary(start_date = nil, end_date = nil)
-      summary_report('operation_summary', start_date, end_date)
+      summary = summary_report('operation_summary', start_date, end_date)
+      mappings = { 'average_items_per_sale' => :to_f }
+      # *most* keys should be integers, but not all. O_o
+      summary.each do |k, v|
+        summary[k] = v.send(mappings[k] || :to_i)
+      end
     end
 
     def operations_by_hour(start_date = nil, end_date = nil)
