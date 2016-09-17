@@ -50,6 +50,9 @@ module ShopkeepReports
     end
 
     def summary_report(type, start_date = nil, end_date = nil)
+      start_date = Time.now.beginning_of_day if start_date.nil?
+      end_date = Time.now.end_of_day if end_date.nil?
+
       query = {
         start: start_date.strftime("%Y-%m-%dT%H:%M:%S.%3N"),
         finish: end_date.strftime("%Y-%m-%dT%H:%M:%S.%3N"),
