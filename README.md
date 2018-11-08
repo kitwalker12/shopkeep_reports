@@ -58,6 +58,10 @@ d.returned_items_report
 
 d.download_inventory
 d.download_transactions(start_date: Time.now - 1.week, end_date: Time.now, detailed: true, tenders: false)
+
+# Get the dashboard numbers
+# (note that values are in cents)
+d.operation_summary(Time.now - 1.month.beginning_of_day, Time.now.end_of_day)
 ```
 
 ## Contributing

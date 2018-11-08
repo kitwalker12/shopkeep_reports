@@ -49,6 +49,40 @@ module ShopkeepReports
       Client.instance.download_transaction_report_link(configuration.transaction_uri(link), start_date.iso8601, end_date.iso8601)
     end
 
+    def summary_report(type, start_date = nil, end_date = nil)
+      start_date = Time.now.beginning_of_day if start_date.nil?
+      end_date = Time.now.end_of_day if end_date.nil?
+
+      query = {
+        start: start_date.strftime("%Y-%m-%dT%H:%M:%S.%3N"),
+        finish: end_date.strftime("%Y-%m-%dT%H:%M:%S.%3N"),
+      }
+
+      Client.instance.authorize
+      Client.instance.summary_report(configuration.reporting_uri("/#{type}"), query)
+    end
+
+    def operation_summary(start_date = nil, end_date = nil)
+      summary = summary_report('operation_summary', start_date, end_date)
+      mappings = { 'average_items_per_sale' => :to_f }
+      # *most* keys should be integers, but not all. O_o
+      summary.each do |k, v|
+        summary[k] = v.send(mappings[k] || :to_i)
+      end
+    end
+
+    def operations_by_hour(start_date = nil, end_date = nil)
+      summary_report('operations_by_hour', start_date, end_date)
+    end
+
+    def tenders_summary(start_date = nil, end_date = nil)
+      summary_report('tenders_summary', start_date, end_date)
+    end
+
+    def top_selling_items(start_date = nil, end_date = nil)
+      summary_report('top_selling_items', start_date, end_date)
+    end
+
     private
     def configuration
       ShopkeepReports.configuration
